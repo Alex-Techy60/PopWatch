@@ -4,6 +4,7 @@ import ApiError from '../utils/ApiError.js';
 import { uploadOnCloudinary } from '../utils/Cloudinary.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try {
@@ -201,7 +202,7 @@ const refreshAccessToken = AsyncHandler(async (req, res) => {
             secure: true
         }
     
-        const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
+        const { accessToken, refreshToken: newRefreshToken } = await generateAccessAndRefreshTokens(user._id);
     
         return res
         .status(200)
@@ -257,7 +258,7 @@ const updateUserProfile = AsyncHandler(async (req, res) => {
         throw new ApiError(400, "Full name and email are required");
     }
 
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set: {

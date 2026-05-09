@@ -9,14 +9,17 @@ const userSchema = Schema(
             required: true,
             unique: true,
             trim: true,
-            index: true
+            index: true,
+            minLength: [3, "Username must be at least 3 characters"],
+            maxLength: [30, "Username cannot exceed 30 characters"]
         }, 
         email: {
             type: String, 
             required: true,
             lowercase: true,
             trim: true,
-            unique: true
+            unique: true,
+            match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please fill a valid email address"]
         }, 
         fullName: {
             type: String, 
@@ -39,10 +42,27 @@ const userSchema = Schema(
         ], 
         password: {
             type: String, 
-            required: [true, 'Password is required']
+            required: [true, 'Password is required'],
+            minlength: [8, "Password must be at least 8 characters long"],
+            validate: {
+                validator: function(value) {
+                    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(value);
+                },
+                message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+            },
+            select: false
         }, 
         refreshToken: {
             type: String
+        },
+        role: {
+            type: String,
+            enum: ["user", "admin"],
+            default: "user"
+        },
+        isEmailVerified: {
+            type: Boolean,
+            default: false
         }
     }, {timestamps: true}
 )
