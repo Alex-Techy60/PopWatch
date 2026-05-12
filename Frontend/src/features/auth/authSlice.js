@@ -1,37 +1,42 @@
 // src/features/auth/authSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    user: null,
-    isAuthenticated: false,
-    loading: true,
-    isGuest: false,
+  user: null,
+  accessToken: null,
+  refreshToken: null,
+  isAuthenticated: false,
+  isLoading: false,
 };
 
 const authSlice = createSlice({
-    name: "auth",
-    initialState,
-    reducers: {
-        setLoading: (state, action) => {
-            state.loading = action.payload;
-        },
-        loginSuccess: (state, action) => {
-            state.user = action.payload;
-            state.isAuthenticated = true;
-            state.isGuest = false;
-            state.loading = false;
-        },
-        logoutSuccess: (state) => {
-            state.user = null;
-            state.isAuthenticated = false;
-            state.isGuest = false;
-            state.loading = false;
-        },
-        continueAsGuest: (state) => {
-            state.isGuest = true;
-        }
+  name: 'auth',
+  initialState,
+  reducers: {
+    setCredentials: (state, action) => {
+      const { user, accessToken, refreshToken } = action.payload;
+      state.user = user;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+      state.isAuthenticated = true;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
     },
+    logout: (state) => {
+      state.user = null;
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.isAuthenticated = false;
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+    },
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+  },
 });
 
-export const { setLoading, loginSuccess, logoutSuccess, continueAsGuest } = authSlice.actions;
+export const { setCredentials, logout, setLoading } = authSlice.actions;
 export default authSlice.reducer;

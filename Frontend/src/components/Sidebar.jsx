@@ -1,33 +1,54 @@
 // src/components/Sidebar.jsx
-import { NavLink } from "react-router-dom";
-import { FiHome, FiClock, FiThumbsUp, FiSettings } from "react-icons/fi";
+import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Home, TrendingUp, Compass, Users, History, ThumbsUp, ListVideo } from 'lucide-react';
+import useAuth from '@/hooks/useAuth';
+import { cn } from '@/utils/cn';
 
-const Sidebar = () => {
-  const links = [
-    { name: "Home", path: "/", icon: <FiHome size={20} /> },
-    { name: "History", path: "/history", icon: <FiClock size={20} /> },
-    { name: "Liked Videos", path: "/liked", icon: <FiThumbsUp size={20} /> },
-    { name: "Settings", path: "/settings", icon: <FiSettings size={20} /> },
+export default function Sidebar({ collapsed }) {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  const guestLinks = [
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Trending', path: '/trending', icon: TrendingUp },
+    { name: 'Explore', path: '/explore', icon: Compass },
   ];
 
-  return (
-    <aside className="w-64 bg-surface border-r border-primary/10 flex flex-col pt-6 px-3">
-      {links.map((link) => (
-        <NavLink
-          key={link.name}
-          to={link.path}
-          className={({ isActive }) =>
-            `flex items-center gap-4 px-4 py-3 rounded-xl mb-2 transition-all ${
-              isActive ? "bg-primary/10 text-primary font-semibold" : "text-textMuted hover:bg-white/5 hover:text-textMain"
-            }`
-          }
-        >
-          {link.icon}
-          <span>{link.name}</span>
-        </NavLink>
-      ))}
-    </aside>
-  );
-};
+  const authLinks = [
+    { name: 'Subscriptions', path: '/subscriptions', icon: Users },
+    { name: 'History', path: '/history', icon: History },
+    { name: 'Liked', path: '/liked', icon: ThumbsUp },
+    { name: 'Playlists', path: '/playlists', icon: ListVideo },
+  ];
 
-export default Sidebar;
+  const links = isAuthenticated ? [...guestLinks, ...authLinks] : guestLinks;
+
+  return (
+    <motion.aside 
+      animate={{ width: collapsed ? 72 : 240 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed left-0 top-16 h-[calc(100vh-4rem)] bg-surface border-r border-border overflow-hidden z-30"
+    >
+      <div className="flex flex-col py-4">
+        {links.map((link) => {
+          const Icon = link.icon;
+          const isActive = location.pathname === link.path;
+          return (
+            <Link 
+              key={link.path} 
+              to={link.path}
+              className={cn(
+                "flex items-center px-6 py-3 hover:bg-surface-elevated transition-colors",
+                isActive && "bg-surface-elevated border-l-4 border-primary text-primary"
+              )}
+            >
+              <Icon size={24} className={cn("shrink-0", isActive ? "text-primary" : "text-text-secondary")} />
+              {!collapsed && <span className="ml-4 whitespace-nowrap">{link.name}</span>}
+            </Link>
+          );
+        })}
+      </div>
+    </motion.aside>
+  );
+}

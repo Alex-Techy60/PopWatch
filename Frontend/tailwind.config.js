@@ -3,18 +3,33 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       colors: {
-        background: "#111827", // Clean dark gray
-        surface: "#1F2937",    // Slightly lighter card background
-        primary: "#8B5CF6",    // Soft violet
-        primaryHover: "#7C3AED",
-        textMain: "#F9FAFB",   // Pure white text
-        textMuted: "#9CA3AF",  // Soft gray text
-      }
+        background: '#0a0a0f',
+        surface: {
+          DEFAULT: '#12121a',
+          elevated: '#1a1a27',
+        },
+        primary: {
+          DEFAULT: '#7c3aed',
+          hover: '#6d28d9',
+          glow: 'rgba(124, 58, 237, 0.3)',
+        },
+        accent: '#a78bfa',
+        text: {
+          primary: '#f0f0ff',
+          secondary: '#a0a0b8',
+        },
+        border: 'rgba(124, 58, 237, 0.2)',
+        error: '#ef4444',
+        success: '#22c55e',
+      },
     },
   },
   plugins: [],
