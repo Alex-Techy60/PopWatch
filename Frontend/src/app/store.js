@@ -1,8 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import authReader from "../features/auth/authSlice";
+// src/app/store.js
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from '../features/auth/authSlice';
 
 export const store = configureStore({
     reducer: {
-        auth: authReader,
+        auth: authReducer,
+        // Later you can add videoSlice, subscriptionSlice, etc.
     }
 });
