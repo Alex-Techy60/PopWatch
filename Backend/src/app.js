@@ -15,8 +15,10 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import userRouter from "./routes/user.route.js";
-
 app.use("/api/v1/users", userRouter);
+
+import videoRouter from "./routes/video.route.js";
+app.use("/api/v1/videos", videoRouter);
 
 app.use((err, req, res, next) => {
     return res.status(err.statusCode || 500).json({
