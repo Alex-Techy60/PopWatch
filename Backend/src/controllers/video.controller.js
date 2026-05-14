@@ -229,7 +229,7 @@ const getVideoById = AsyncHandler(async (req, res) => {
 
     if (
         !foundVideo.isPublished &&
-        foundVideo.owner._id.toString() !== req.user?._id?.toString()
+        foundVideo.owner._id?.toString() !== req.user?._id?.toString()
     ) {
         throw new ApiError(403, "This video is not available");
     }
@@ -283,7 +283,11 @@ const updateVideo = AsyncHandler(async (req, res) => {
             throw new ApiError(500, "Failed to upload new thumbnail");
         }
 
-        await deleteFromCloudinary(oldThumbnailUrl);
+        try {
+            await deleteFromCloudinary(oldThumbnailUrl);
+        } catch (error) {
+            console.error("Error occurred while deleting old thumbnail:", error);
+        }
         updateFields.thumbnail = thumbnail.url;
     }
 
@@ -315,10 +319,14 @@ const deleteVideo = AsyncHandler(async (req, res) => {
         throw new ApiError(403, "You are not authorized to delete this video");
     }
 
-    await Promise.all([
-        deleteFromCloudinary(video.videoFile),
-        deleteFromCloudinary(video.thumbnail)
-    ]);
+    try {
+        await Promise.all([
+            deleteFromCloudinary(video.videoFile),
+            deleteFromCloudinary(video.thumbnail)
+        ]);
+    } catch (error) {
+        console.error("Error occurred while deleting video files:", error);
+    }
 
     await Video.findByIdAndDelete(videoId);
 
