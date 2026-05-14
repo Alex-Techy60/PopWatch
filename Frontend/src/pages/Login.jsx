@@ -24,7 +24,7 @@ export default function Login() {
     try {
       const res = await authService.login(data.identifier, data.password);
       dispatch(setCredentials(res.data.data));
-      toast.success("Welcome back!");
+      toast.success("Welcome back to PopWatch!");
       navigate('/');
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
@@ -32,13 +32,32 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
-      <Input placeholder="Email or Username" {...register('identifier')} error={errors.identifier} />
-      <Input type="password" placeholder="Password" {...register('password')} error={errors.password} />
-      <Button type="submit" className="w-full" isLoading={isSubmitting}>Sign In</Button>
-      <p className="text-center text-sm text-text-secondary mt-4">
-        Don't have an account? <Link to="/register" className="text-primary hover:underline">Sign up</Link>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold mb-2 text-text-primary">Welcome back</h2>
+        <p className="text-text-secondary">Please enter your details to sign in.</p>
+      </div>
+      
+      <div className="space-y-4">
+        <Input placeholder="Email or Username" {...register('identifier')} error={errors.identifier} />
+        
+        <div className="space-y-2">
+          <Input type="password" placeholder="Password" {...register('password')} error={errors.password} />
+          <div className="flex justify-end">
+            {/* Forgot Password Link Added Here */}
+            <Link to="/forgot-password" className="text-sm text-primary hover:text-primary-hover hover:underline transition-colors">
+              Forgot password?
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <Button type="submit" className="w-full py-3 text-base shadow-lg shadow-primary/20 mt-2" isLoading={isSubmitting}>
+        Sign In
+      </Button>
+      
+      <p className="text-center text-sm text-text-secondary mt-8">
+        Don't have an account? <Link to="/register" className="text-primary font-semibold hover:underline">Sign up for free</Link>
       </p>
     </form>
   );

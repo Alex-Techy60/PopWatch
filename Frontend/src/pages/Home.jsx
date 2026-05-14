@@ -36,33 +36,57 @@ export default function Home() {
         {isPageLoading && (
           <motion.div
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, filter: 'blur(10px)' }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background"
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/95 backdrop-blur-xl"
           >
             <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
               animate={{ 
-                scale: [0.9, 1.1, 1],
+                scale: [0.8, 1.1, 1],
+                opacity: 1,
                 filter: [
                   'drop-shadow(0 0 0px rgba(124,58,237,0))',
-                  'drop-shadow(0 0 60px rgba(124,58,237,0.6))',
-                  'drop-shadow(0 0 20px rgba(124,58,237,0.3))'
+                  'drop-shadow(0 0 50px rgba(124,58,237,0.8))',
+                  'drop-shadow(0 0 20px rgba(124,58,237,0.4))'
                 ]
               }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="relative flex items-center justify-center"
             >
-              {/* Loading Screen Logo */}
-              <img src="/src/assets/logo.svg" alt="PopWatch Logo" className="h-28 w-auto mb-8" />
+              {/* Radar pulse ring behind logo */}
+              <motion.div 
+                className="absolute inset-[-30px] rounded-full border-2 border-primary/30"
+                animate={{ scale: [1, 1.6], opacity: [0.8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              />
+              <img src="/src/assets/logo.svg" alt="PopWatch Logo" className="h-28 w-auto relative z-10" />
             </motion.div>
             
-            <motion.div className="w-64 h-1 bg-surface-elevated rounded-full overflow-hidden">
+            <div className="mt-14 flex flex-col items-center gap-4">
               <motion.div 
-                className="h-full bg-primary"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.5, ease: "circOut" }}
-              />
-            </motion.div>
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+                className="text-text-secondary tracking-widest text-[11px] uppercase font-bold"
+              >
+                Initializing Experience
+              </motion.div>
+              
+              {/* Animated Progress Bar */}
+              <div className="w-64 h-1.5 bg-surface-elevated rounded-full overflow-hidden relative shadow-[0_0_10px_rgba(124,58,237,0.2)]">
+                <motion.div 
+                  className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-primary via-accent to-primary"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 1.8, ease: "circOut" }}
+                />
+                {/* Shimmer sweep effect */}
+                <motion.div 
+                  className="absolute top-0 bottom-0 w-24 bg-white/30 skew-x-[-20deg]"
+                  animate={{ left: ["-100%", "200%"] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "linear", delay: 0.5 }}
+                />
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
